@@ -1,0 +1,15 @@
+name: pulumi-exercise
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: GCP Provisioning using Pulumi
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: gcp-python
+template:
+  config:
+    gcp:project:
+      description: The project to deploy to
+      type: string
