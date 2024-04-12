@@ -1,0 +1,1 @@
+# https://www.pulumi.com/registry/packages/gcp/api-docs/artifactregistry/repository/
