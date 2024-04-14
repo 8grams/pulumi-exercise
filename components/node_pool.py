@@ -7,10 +7,10 @@ class NodePoolArgs:
                  name:str,
                  cluster: container.Cluster,
                  node_config: container.ClusterNodeConfigArgs,
-                 node_count=1,
-                 node_locations: Sequence[str]=["US-CENTRAL1-A"],
                  autoscaling=container.NodePoolAutoscalingArgs,
                  management=container.NodePoolManagementArgs,
+                 node_count=1,
+                 node_locations: Sequence[str]=["US-CENTRAL1-A"],
                 ):
         self.name = name
         self.cluster = cluster

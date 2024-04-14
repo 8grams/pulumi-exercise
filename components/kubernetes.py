@@ -6,7 +6,7 @@ class KubernetesClusterArgs:
                  name: str,
                  network: compute.Network,
                  subnetwork: compute.Subnetwork,
-                 addons_config: container.ClusterPrivateClusterConfigArgs,
+                 addons_config: container.ClusterAddonsConfigArgs,
                  release_channel: container.ClusterReleaseChannelArgs,
                  ip_allocation_policy: container.ClusterIpAllocationPolicyArgs,
                  private_cluster_config: container.ClusterPrivateClusterConfigArgs,
