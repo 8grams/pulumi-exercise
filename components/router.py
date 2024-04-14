@@ -3,7 +3,7 @@ from pulumi_gcp import compute
 
 class RouterArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  network: compute.Network,
                  region="US-CENTRAL1"):
         self.name = name

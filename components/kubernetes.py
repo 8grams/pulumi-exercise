@@ -3,7 +3,7 @@ from pulumi_gcp import compute, container
 
 class KubernetesClusterArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  network: compute.Network,
                  subnetwork: compute.Subnetwork,
                  addons_config: container.ClusterPrivateClusterConfigArgs,

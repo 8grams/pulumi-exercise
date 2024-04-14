@@ -12,7 +12,7 @@ class IpRangeArgs:
 
 class SubnetworkArgs:
     def __init__(self,
-                 name, 
+                 name: str, 
                  network: compute.Network,
                  ip_cidr_range: IpRangeArgs,
                  pod_address_range: IpRangeArgs,

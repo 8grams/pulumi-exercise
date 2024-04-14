@@ -5,28 +5,44 @@ from pulumi_gcp import compute
 class RouterNatSubnetworkArgs:
     def __init__(self,
                  subnetwork: compute.Subnetwork,
-                 source_ip_ranges_to_nat=["ALL_IP_RANGES"]):
+                 source_ip_ranges_to_nat: Sequence[str]=["ALL_IP_RANGES"]):
         self.name = subnetwork.id
         self.source_ip_ranges_to_nat = source_ip_ranges_to_nat
 
-class RouterIpAddressArgs:
+class RouterNatIpAddressArgs:
     def __init__(self,
                  name: str,
                  address_type="EXTERNAL",
-                 network_tier="PREMIUM",):
+                 network_tier="PREMIUM"):
         self.name = name
         self.address_type = address_type
         self.network_tier = network_tier
 
+# https://www.pulumi.com/registry/packages/gcp/api-docs/compute/address/
+class RouterNatIpAddress(ComponentResource):
+    def __init__(self, 
+                 name: str, 
+                 label: str,
+                 args: RouterNatIpAddressArgs, 
+                 opts: ResourceOptions = None):
+        super().__init__(label, name, {}, opts)
+
+        self.nat = compute.Address(
+            resource_name=name,
+            address_type=args.address_type,
+            network_tier=args.network_tier,
+            opts=ResourceOptions(parent=self))
+        self.register_outputs({})
+
 class RouterNatArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  subnetworks: Sequence[RouterNatSubnetworkArgs],
                  router: compute.Router,
+                 nat_ips: Sequence[RouterNatIpAddress],
                  region="US-CENTRAL1",
                  nat_ip_allocate_option="MANUAL_ONLY",
-                 source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS",
-                 nat_ips: RouterIpAddressArgs=None):
+                 source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"):
         self.name = name
         self.router = router
         self.region = region

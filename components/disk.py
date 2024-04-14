@@ -4,7 +4,7 @@ from variables import zone
 
 class DiskArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  zone=zone,
                  size: int=10,
                  physical_block_size_bytes: int=4096,

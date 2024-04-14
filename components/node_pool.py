@@ -4,7 +4,7 @@ from pulumi_gcp import container, serviceaccount
 
 class NodePoolArgs:
     def __init__(self,
-                 name,
+                 name:str,
                  cluster: container.Cluster,
                  node_config: container.ClusterNodeConfigArgs,
                  node_count=1,

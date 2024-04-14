@@ -4,7 +4,7 @@ from pulumi_gcp import compute, servicenetworking
 
 class VpcArgs:
     def __init__(self,
-                 name, 
+                 name: str, 
                  routing_mode="REGIONAL", 
                  auto_create_subnetworks=False,
                  mtu="1460",
@@ -18,7 +18,7 @@ class VpcArgs:
 
 class GlobalAddressArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  purpose,
                  address_type,
                  prefix_length,
@@ -79,9 +79,10 @@ class GlobalAddress(ComponentResource):
 class ServiceNetworkingConnection(ComponentResource):
     def __init__(self,
                  name: str,
+                 label: str,
                  args: ServiceNetworkingConnectionArgs,
                  opts: ResourceOptions = None):
-        super().__init__("gcp:modules:servicenetworkingconnection", name, {}, opts)
+        super().__init__(label, name, {}, opts)
         child_opts = ResourceOptions(parent=self)
 
         self.service_networking_connection = servicenetworking.Connection(

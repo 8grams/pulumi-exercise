@@ -5,7 +5,7 @@ from variables import zone
 
 class ServiceAccountArgs:
     def __init__(self,
-                 name,
+                 name: str,
                  account_id: str,
                 ):
         self.name = name
