@@ -30,6 +30,14 @@ class IamBindingArgs:
         self.role = role
         self.members = members
 
+class ServiceAccountKeyArgs:
+    def __init__(self,
+                 service_account_id: str,
+                 public_key_type: str,
+                ):
+        self.service_account_id = service_account_id
+        self.public_key_type = public_key_type
+
 # https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/iambinding/
 class IamBinding(ResourceOptions):
     def __init__(self, 
@@ -77,6 +85,22 @@ class ServiceAccount(ResourceOptions):
         self.service_account = serviceaccount.Account(
             resource_name=args.name,
             account_id=args.account_id,
+        )
+
+        self.register_outputs({})
+
+# https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/key/
+class ServiceAccountKey(ResourceOptions):
+    def __init__(self, 
+                 name: str, 
+                 label: str,
+                 args: ServiceAccountKeyArgs, 
+                 opts: ResourceOptions = None):
+        super().__init__(label, name, {}, opts)
+
+        self.service_account_key = serviceaccount.Key(
+            service_account_id=args.service_account_id,
+            public_key_type=args.public_key_type
         )
 
         self.register_outputs({})

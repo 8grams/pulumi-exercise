@@ -2,13 +2,6 @@ from typing import Sequence
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
 
-class RouterNatSubnetworkArgs:
-    def __init__(self,
-                 subnetwork: compute.Subnetwork,
-                 source_ip_ranges_to_nat: Sequence[str]=["ALL_IP_RANGES"]):
-        self.name = subnetwork.id
-        self.source_ip_ranges_to_nat = source_ip_ranges_to_nat
-
 class RouterNatIpAddressArgs:
     def __init__(self,
                  name: str,
@@ -27,7 +20,7 @@ class RouterNatIpAddress(ComponentResource):
                  opts: ResourceOptions = None):
         super().__init__(label, name, {}, opts)
 
-        self.nat = compute.Address(
+        self.nat_ip_address = compute.Address(
             resource_name=name,
             address_type=args.address_type,
             network_tier=args.network_tier,
@@ -37,7 +30,7 @@ class RouterNatIpAddress(ComponentResource):
 class RouterNatArgs:
     def __init__(self,
                  name: str,
-                 subnetworks: Sequence[RouterNatSubnetworkArgs],
+                 subnetworks: Sequence[compute.RouterNatSubnetworkArgs],
                  router: compute.Router,
                  nat_ips: Sequence[RouterNatIpAddress],
                  region="US-CENTRAL1",

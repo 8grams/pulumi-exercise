@@ -18,6 +18,14 @@ class StorageBucketArgs:
         self.versioning = versioning
         self.uniform_bucket_level_access = uniform_bucket_level_access
 
+class StorageBucketAclArgs:
+    def __init__(self,
+                 bucket: storage.Bucket,
+                 role_entity: Sequence[str],
+                 ) -> None:
+        self.bucket = bucket
+        self.role_entity = role_entity
+
 # https://www.pulumi.com/registry/packages/gcp/api-docs/storage/bucket/
 class StorageBucket:
     def __init__(self, 
@@ -34,5 +42,21 @@ class StorageBucket:
             lifecycle_rules=args.lifecycle_rules,
             versioning=args.versioning,
             uniform_bucket_level_access=args.uniform_bucket_level_access,
+            opts=ResourceOptions(parent=self))
+        self.register_outputs({})
+
+# https://www.pulumi.com/registry/packages/gcp/api-docs/storage/bucketacl/
+class StorageBucketAcl:
+    def __init__(self, 
+                 name: str, 
+                 label: str,
+                 args: StorageBucketAclArgs, 
+                 opts: ResourceOptions = None):
+        super().__init__(label, name, {}, opts)
+
+        self.storage_bucket_acl = storage.BucketACL(
+            resource_name=name,
+            bucket=args.bucket.name,
+            role_entities=args.role_entity,
             opts=ResourceOptions(parent=self))
         self.register_outputs({})

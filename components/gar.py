@@ -3,13 +3,11 @@ from pulumi_gcp import artifactregistry
 
 class ArtifactRegistryArgs:
     def __init__(self,
-                 name: str, 
-                 location,
-                 repository_id,
+                 repository_id: str,
+                 location: str,
                  format):
-        self.name = name
-        self.location = location
         self.repository_id = repository_id
+        self.location = location
         self.format = format
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/artifactregistry/repository/
