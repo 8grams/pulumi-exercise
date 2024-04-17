@@ -6,9 +6,11 @@ class ServiceAccountArgs:
     def __init__(self,
                  name: str,
                  account_id: str,
+                 project_id: str
                 ):
         self.name = name
         self.account_id = account_id
+        self.project_id = project_id
 
 class IamMemberArgs:
     def __init__(self,
@@ -65,7 +67,7 @@ class IamMember(ComponentResource):
         self.iam_member = serviceaccount.IAMMember(
             resource_name=name,
             role=args.role,
-            service_account_id=args.serviceaccount.id,
+            service_account_id=args.serviceaccount.name,
             member=args.serviceaccount.email.apply(lambda email: "serviceAccount:" + email)
         )
 
@@ -83,6 +85,8 @@ class ServiceAccount(ComponentResource):
         self.service_account = serviceaccount.Account(
             resource_name=args.name,
             account_id=args.account_id,
+            display_name=args.name,
+            project=args.project_id
         )
 
         self.register_outputs({})

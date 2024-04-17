@@ -1,4 +1,4 @@
-region = "US-CENTRAL1"
+region = "us-central1"
 zone = region + "-a"
 project_id = "mashanz-software-engineering"
 db_username = "onxp"

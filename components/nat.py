@@ -1,15 +1,18 @@
 from typing import Sequence
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
+from components.variables import region
 
 class RouterNatIpAddressArgs:
     def __init__(self,
                  name: str,
                  address_type="EXTERNAL",
-                 network_tier="PREMIUM"):
+                 network_tier="PREMIUM",
+                 region: str=region):
         self.name = name
         self.address_type = address_type
         self.network_tier = network_tier
+        self.region = region
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/compute/address/
 class RouterNatIpAddress(ComponentResource):
@@ -24,6 +27,7 @@ class RouterNatIpAddress(ComponentResource):
             resource_name=name,
             address_type=args.address_type,
             network_tier=args.network_tier,
+            region=args.region,
             opts=ResourceOptions(parent=self))
         self.register_outputs({})
 

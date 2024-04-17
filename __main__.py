@@ -23,7 +23,7 @@ vpc = Vpc(
 
 # Service Networking Connection
 global_address = GlobalAddress(
-    "onxp_vpc_peering", 
+    "onxp-vpc-peering", 
     "gcp:modules:vpc:address:onxp",
     GlobalAddressArgs(
         name="vpc-peering-ip-address",
@@ -70,7 +70,8 @@ nat_address = RouterNatIpAddress(
     RouterNatIpAddressArgs(
         name="onxp-nat-ip",
         address_type="EXTERNAL",
-        network_tier="PREMIUM"
+        network_tier="PREMIUM",
+        region=region
     )
 )
 
@@ -164,7 +165,8 @@ node_pool_sa = ServiceAccount(
     "gcp:modules:kubernetes:nodepool:sa:onxp",
     ServiceAccountArgs(
         name="onxp-nodepool-sa",
-        account_id="onxp-nodepool-sa"
+        account_id="onxp-nodepool-sa",
+        project_id=project_id
     )
 )
 
@@ -178,7 +180,7 @@ node_pool = NodePool(
         node_config=container.ClusterNodeConfigArgs(
             preemptible=True,
             machine_type="e2-micro",
-            disk_size_gb=80,
+            disk_size_gb=40,
             disk_type="pd-balanced",
             service_account=node_pool_sa.service_account.email.apply(lambda email: email),
             oauth_scopes = [
@@ -187,7 +189,7 @@ node_pool = NodePool(
         ),
         autoscaling=container.NodePoolAutoscalingArgs(
             min_node_count=1,
-            max_node_count=10,
+            max_node_count=2,
             location_policy="BALANCED"
         ),
         management=container.NodePoolManagementArgs(
@@ -261,7 +263,8 @@ db_sa = ServiceAccount(
     "gcp:modules:sql:sa:onxp",
     ServiceAccountArgs(
         name="onxp-db-sa",
-        account_id="cloudsql-onxp"
+        account_id="cloudsql-onxp",
+        project_id=project_id
     )
 )
 
@@ -327,7 +330,8 @@ bucket_sa = ServiceAccount(
     "gcp:modules:storage:bucket:sa:onxp",
     ServiceAccountArgs(
         name="onxp-bucket-sa",
-        account_id="onxp-bucket-sa"
+        account_id="onxp-bucket-sa",
+        project_id=project_id
     )
 )
 
@@ -368,7 +372,8 @@ gar_sa = ServiceAccount(
     "gcp:modules:artifactregistry:sa:onxp",
     ServiceAccountArgs(
         name="onxp-gar-sa",
-        account_id="onxp-gar-sa"
+        account_id="onxp-gar-sa",
+        project_id=project_id
     )
 )
 
