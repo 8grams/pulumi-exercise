@@ -1,4 +1,4 @@
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute, container
 
 class KubernetesClusterArgs:
@@ -34,7 +34,7 @@ class KubernetesClusterArgs:
         self.networking_mode = networking_mode
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/container/cluster/
-class KubernetesCluster(ResourceOptions):
+class KubernetesCluster(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -56,6 +56,7 @@ class KubernetesCluster(ResourceOptions):
             remove_default_node_pool=True,
             logging_service=None,
             monitoring_service=None,
-            networking_mode="VPC_NATIVE")
+            networking_mode="VPC_NATIVE",
+            opts=ResourceOptions(parent=self))
         
         self.register_outputs({})

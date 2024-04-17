@@ -1,5 +1,5 @@
 from typing import Sequence
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import storage
 
 class StorageBucketArgs:
@@ -27,7 +27,7 @@ class StorageBucketAclArgs:
         self.role_entity = role_entity
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/storage/bucket/
-class StorageBucket:
+class StorageBucket(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -46,7 +46,7 @@ class StorageBucket:
         self.register_outputs({})
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/storage/bucketacl/
-class StorageBucketAcl:
+class StorageBucketAcl(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,

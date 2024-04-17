@@ -16,12 +16,15 @@ from components.gar import ArtifactRegistry, ArtifactRegistryArgs
 from components.disk import Disk, DiskArgs
 
 # VPC
-vpc = Vpc("main", VpcArgs(name="main"))
+vpc = Vpc(
+    "main",
+    "gcp:modules:vpc:onxp",
+    VpcArgs(name="main"))
 
 # Service Networking Connection
 global_address = GlobalAddress(
     "onxp_vpc_peering", 
-    "gcp:modules:vpc:onxp",
+    "gcp:modules:vpc:address:onxp",
     GlobalAddressArgs(
         name="vpc-peering-ip-address",
         purpose="VPC_PEERING",
@@ -171,13 +174,13 @@ node_pool = NodePool(
     "gcp:modules:kubernetes:nodepool:onxp",
     NodePoolArgs(
         name="onxp-nodepool",
-        cluster=kubernetes,
+        cluster=kubernetes.cluster,
         node_config=container.ClusterNodeConfigArgs(
             preemptible=True,
             machine_type="e2-micro",
             disk_size_gb=80,
             disk_type="pd-balanced",
-            service_account=node_pool_sa.service_account.email,
+            service_account=node_pool_sa.service_account.email.apply(lambda email: email),
             oauth_scopes = [
                 "https://www.googleapis.com/auth/cloud-platform"
             ]
@@ -267,7 +270,6 @@ db_iam_member = IamMember(
     "onxp-db-iam-member",
     "gcp:modules:sql:sa:iam:onxp",
     IamMemberArgs(
-        project_id=project_id,
         role="roles/cloudsql.admin",
         serviceaccount=db_sa.service_account
     )
@@ -334,7 +336,6 @@ bucket_iam_member = IamMember(
     "onxp-bucket-iam-member",
     "gcp:modules:storage:bucket:sa:iam:onxp",
     IamMemberArgs(
-        project_id=project_id,
         role="roles/storage.admin",
         serviceaccount=bucket_sa.service_account
     )
@@ -345,8 +346,8 @@ bucket_acl = StorageBucketAcl(
     "onxp-bucket-acl",
     "gcp:modules:storage:bucket:acl:onxp",
     StorageBucketAclArgs(
-        storage_bucket.storage.name,
-        role_entity=["OWNER:user-" + bucket_sa.service_account.email]
+        storage_bucket.storage,
+        role_entity=[bucket_sa.service_account.email.apply(lambda email: "OWNER:user-" + email)]
     )
 )
 
@@ -376,7 +377,6 @@ gar_iam_member = IamMember(
     "onxp-gar-iam-member",
     "gcp:modules:artifactregistry:sa:iam:onxp",
     IamMemberArgs(
-        project_id=project_id,
         role="roles/artifactregistry.admin",
         serviceaccount=gar_sa.service_account
     )

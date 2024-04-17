@@ -1,7 +1,6 @@
 from typing import Sequence
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import serviceaccount
-from variables import zone
 
 class ServiceAccountArgs:
     def __init__(self,
@@ -13,10 +12,8 @@ class ServiceAccountArgs:
 
 class IamMemberArgs:
     def __init__(self,
-                 project_id: str,
                  role: str,
                  serviceaccount: serviceaccount.Account) -> None:
-        self.project_id = project_id
         self.role = role
         self.serviceaccount = serviceaccount
 
@@ -39,7 +36,7 @@ class ServiceAccountKeyArgs:
         self.public_key_type = public_key_type
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/iambinding/
-class IamBinding(ResourceOptions):
+class IamBinding(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -48,16 +45,16 @@ class IamBinding(ResourceOptions):
         super().__init__(label, name, {}, opts)
 
         self.iam_member = serviceaccount.IAMBinding(
-            resource_name=args.name,
+            resource_name=name,
             service_account_id=args.serviceaccount.id,
             role=args.role,
-            member=args.members
+            members=args.members
         )
 
         self.register_outputs({})
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/iammember/
-class IamMember(ResourceOptions):
+class IamMember(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -66,15 +63,16 @@ class IamMember(ResourceOptions):
         super().__init__(label, name, {}, opts)
 
         self.iam_member = serviceaccount.IAMMember(
-            resource_name=args.name,
+            resource_name=name,
             role=args.role,
-            member="serviceAccount:" + args.serviceaccount.email
+            service_account_id=args.serviceaccount.id,
+            member=args.serviceaccount.email.apply(lambda email: "serviceAccount:" + email)
         )
 
         self.register_outputs({})
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/account/
-class ServiceAccount(ResourceOptions):
+class ServiceAccount(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -90,7 +88,7 @@ class ServiceAccount(ResourceOptions):
         self.register_outputs({})
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/key/
-class ServiceAccountKey(ResourceOptions):
+class ServiceAccountKey(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -100,7 +98,8 @@ class ServiceAccountKey(ResourceOptions):
 
         self.service_account_key = serviceaccount.Key(
             service_account_id=args.service_account_id,
-            public_key_type=args.public_key_type
+            public_key_type=args.public_key_type,
+            opts=ResourceOptions(parent=self)
         )
 
         self.register_outputs({})

@@ -1,5 +1,5 @@
 from typing import Sequence
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import container, serviceaccount
 
 class NodePoolArgs:
@@ -21,7 +21,7 @@ class NodePoolArgs:
         self.management = management
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/container/nodepool/
-class NodePool(ResourceOptions):
+class NodePool(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -37,6 +37,7 @@ class NodePool(ResourceOptions):
             node_locations=args.node_locations,
             autoscaling=args.autoscaling,
             management=args.management,
+            opts=ResourceOptions(parent=self)
         )
 
         self.register_outputs({})

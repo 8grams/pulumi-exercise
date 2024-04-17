@@ -1,4 +1,4 @@
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import artifactregistry
 
 class ArtifactRegistryArgs:
@@ -11,7 +11,7 @@ class ArtifactRegistryArgs:
         self.format = format
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/artifactregistry/repository/
-class ArtifactRegistry:
+class ArtifactRegistry(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,

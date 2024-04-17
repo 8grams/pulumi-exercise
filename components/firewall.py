@@ -1,5 +1,5 @@
 from typing import Sequence
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
 
 class FirewallArgs:
@@ -16,7 +16,7 @@ class FirewallArgs:
         self.target_tags = target_tags
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/compute/firewall/
-class Firewall:
+class Firewall(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,

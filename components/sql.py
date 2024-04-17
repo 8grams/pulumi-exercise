@@ -1,6 +1,6 @@
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import sql
-from variables import region
+from components.variables import region
 
 class DbInstanceArgs:
     def __init__(self,
@@ -16,7 +16,7 @@ class DbInstanceArgs:
 
 # DB instance
 # https://www.pulumi.com/registry/packages/gcp/api-docs/sql/databaseinstance/
-class DbInstance:
+class DbInstance(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -42,7 +42,7 @@ class DbArgs:
 
 # Database
 # https://www.pulumi.com/registry/packages/gcp/api-docs/sql/database/
-class Db:
+class Db(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
@@ -69,7 +69,7 @@ class DbUserArgs:
         self.password = password
         self.instance = instance
 
-class DbUser:
+class DbUser(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,

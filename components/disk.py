@@ -1,6 +1,6 @@
-from pulumi import ResourceOptions
+from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
-from variables import zone
+from components.variables import zone
 
 class DiskArgs:
     def __init__(self,
@@ -15,7 +15,7 @@ class DiskArgs:
         self.physical_block_size_bytes = physical_block_size_bytes
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/compute/disk/
-class Disk:
+class Disk(ComponentResource):
     def __init__(self, 
                  name: str, 
                  label: str,
