@@ -12,6 +12,7 @@ class NodePoolArgs:
                  management=container.NodePoolManagementArgs,
                  node_count=1,
                  node_locations: Sequence[str]=[zone],
+                 depends_on=None
                 ):
         self.name = name
         self.cluster = cluster
@@ -20,6 +21,7 @@ class NodePoolArgs:
         self.node_locations = node_locations
         self.autoscaling = autoscaling
         self.management = management
+        self.depends_on = depends_on
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/container/nodepool/
 class NodePool(ComponentResource):
@@ -38,7 +40,7 @@ class NodePool(ComponentResource):
             node_locations=args.node_locations,
             autoscaling=args.autoscaling,
             management=args.management,
-            opts=ResourceOptions(parent=self)
+            opts=ResourceOptions(parent=self, depends_on=args.depends_on)
         )
 
         self.register_outputs({})

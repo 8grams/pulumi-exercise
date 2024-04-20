@@ -8,12 +8,15 @@ class FirewallArgs:
                  network: compute.Network,
                  source_ranges: Sequence[str],
                  allows: Sequence[compute.FirewallAllowArgs],
-                 target_tags: Sequence[str]=None):
+                 target_tags: Sequence[str]=None,
+                 depends_on=None
+                 ):
         self.name = name
         self.network = network
         self.source_ranges = source_ranges
         self.allows = allows
         self.target_tags = target_tags
+        self.depends_on = depends_on
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/compute/firewall/
 class Firewall(ComponentResource):
@@ -30,5 +33,5 @@ class Firewall(ComponentResource):
             source_ranges=args.source_ranges,
             allows=args.allows,
             target_tags=args.target_tags,
-            opts=ResourceOptions(parent=self))
+            opts=ResourceOptions(parent=self, depends_on=args.depends_on))
         self.register_outputs({})

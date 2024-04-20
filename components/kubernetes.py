@@ -18,6 +18,8 @@ class KubernetesClusterArgs:
                  logging_service=None,
                  monitoring_service=None,
                  networking_mode="VPC_NATIVE",
+                 deletion_protection=False,
+                 depends_on=None
                  ):
         self.name = name
         self.network = network
@@ -33,6 +35,8 @@ class KubernetesClusterArgs:
         self.logging_service = logging_service
         self.monitoring_service = monitoring_service
         self.networking_mode = networking_mode
+        self.deletion_protection = deletion_protection
+        self.depends_on = depends_on
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/container/cluster/
 class KubernetesCluster(ComponentResource):
@@ -58,6 +62,7 @@ class KubernetesCluster(ComponentResource):
             logging_service=None,
             monitoring_service=None,
             networking_mode="VPC_NATIVE",
-            opts=ResourceOptions(parent=self))
+            deletion_protection=False,
+            opts=ResourceOptions(parent=self, depends_on=args.depends_on))
         
         self.register_outputs({})

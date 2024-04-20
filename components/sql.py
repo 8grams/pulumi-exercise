@@ -8,11 +8,13 @@ class DbInstanceArgs:
                  database_version,
                  settings: sql.DatabaseInstanceSettingsArgs,
                  region=region,
+                 depends_on=None
                  ) -> None:
         self.name = name
         self.region = region
         self.database_version = database_version
         self.settings = settings
+        self.depends_on = depends_on
 
 # DB instance
 # https://www.pulumi.com/registry/packages/gcp/api-docs/sql/databaseinstance/
@@ -29,7 +31,8 @@ class DbInstance(ComponentResource):
             region=args.region,
             database_version=args.database_version,
             settings=args.settings,
-            opts=ResourceOptions(parent=self))
+            deletion_protection=args.settings.deletion_protection_enabled,
+            opts=ResourceOptions(parent=self, depends_on=args.depends_on))
         self.register_outputs({})
 
 class DbArgs:

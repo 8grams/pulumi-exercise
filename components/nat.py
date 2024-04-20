@@ -39,7 +39,9 @@ class RouterNatArgs:
                  nat_ips: Sequence[RouterNatIpAddress],
                  region=region,
                  nat_ip_allocate_option="MANUAL_ONLY",
-                 source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"):
+                 source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS",
+                 depends_on=None
+                 ):
         self.name = name
         self.router = router
         self.region = region
@@ -47,6 +49,7 @@ class RouterNatArgs:
         self.source_subnetwork_ip_ranges_to_nat = source_subnetwork_ip_ranges_to_nat
         self.nat_ips = nat_ips
         self.subnetworks = subnetworks
+        self.depends_on = depends_on
 
 # https://www.pulumi.com/registry/packages/gcp/api-docs/compute/routernat/
 class RouterNat(ComponentResource):
@@ -66,5 +69,5 @@ class RouterNat(ComponentResource):
             source_subnetwork_ip_ranges_to_nat=args.source_subnetwork_ip_ranges_to_nat,
             nat_ips=args.nat_ips,
             subnetworks=args.subnetworks,
-            opts=ResourceOptions(parent=self))
+            opts=ResourceOptions(parent=self, depends_on=args.depends_on))
         self.register_outputs({})

@@ -15,6 +15,14 @@ from components.gcs import StorageBucket, StorageBucketArgs, StorageBucketAcl, S
 from components.gar import ArtifactRegistry, ArtifactRegistryArgs
 from components.disk import Disk, DiskArgs
 
+# To run: pulumi up
+# To destroy: pulumi destroy
+# to sync with actual state of infra: pulumi refresh
+
+# The tricky part is destroying service network connection, 
+# when some other resources are dependent on it. 
+# The trick can be: delete directly on GCP and run pulumi refresh, then pulumi destroy
+
 # VPC
 vpc = Vpc(
     "main",
@@ -156,6 +164,8 @@ kubernetes = KubernetesCluster(
         logging_service=None,
         monitoring_service=None,
         networking_mode="VPC_NATIVE",
+        deletion_protection=False,
+        depends_on=[service_networking_connection.service_networking_connection, vpc.vpc]
     )
 )
 
@@ -216,7 +226,7 @@ db_instance = DbInstance(
             disk_autoresize=True,
             disk_size=10,
             disk_type="PD_SSD",
-            deletion_protection_enabled=True,
+            deletion_protection_enabled=False,
             backup_configuration=sql.DatabaseInstanceSettingsBackupConfigurationArgs(
                 enabled=True,
                 location=region,
@@ -231,8 +241,9 @@ db_instance = DbInstance(
             ),
             insights_config=sql.DatabaseInstanceSettingsInsightsConfigArgs(
                 query_insights_enabled=True
-            )
-        )
+            ),
+        ),
+        depends_on=[service_networking_connection.service_networking_connection, vpc.vpc]
     )
 )
 
@@ -279,15 +290,15 @@ db_iam_member = IamMember(
 )
 
 # # binding service account to workload identity
-# db_iam_binding = IamBinding(
-#     "onxp-db-iam-binding",
-#     "gcp:modules:sql:sa:iambinding:onxp",
-#     IamBindingArgs(
-#         serviceaccount=db_sa.service_account,
-#         role="roles/iam.workloadIdentityUser",
-#         members=["serviceAccount:" + project_id + ".svc.id.goog[exercise/onxp-exercise-sa]"]
-#     )
-# )
+db_iam_binding = IamBinding(
+    "onxp-db-iam-binding",
+    "gcp:modules:sql:sa:iambinding:onxp",
+    IamBindingArgs(
+        serviceaccount=db_sa.service_account,
+        role="roles/iam.workloadIdentityUser",
+        members=["serviceAccount:" + project_id + ".svc.id.goog[exercise/onxp-exercise-sa]"]
+    )
+)
 
 # Create GCS
 # Create bucket
