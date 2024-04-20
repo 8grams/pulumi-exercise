@@ -1,11 +1,12 @@
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
+from components.variables import region
 
 class RouterArgs:
     def __init__(self,
                  name: str,
                  network: compute.Network,
-                 region="US-CENTRAL1"):
+                 region=region):
         self.name = name
         self.network = network
         self.region = region

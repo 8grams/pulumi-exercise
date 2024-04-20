@@ -1,5 +1,6 @@
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute, container
+from components.variables import region
 
 class KubernetesClusterArgs:
     def __init__(self,
@@ -11,7 +12,7 @@ class KubernetesClusterArgs:
                  ip_allocation_policy: container.ClusterIpAllocationPolicyArgs,
                  private_cluster_config: container.ClusterPrivateClusterConfigArgs,
                  workload_identity_config: container.ClusterWorkloadIdentityConfigArgs,
-                 location="US-CENTRAL1",
+                 location=region,
                  initial_node_count=1,
                  remove_default_node_pool=True,
                  logging_service=None,
@@ -51,7 +52,7 @@ class KubernetesCluster(ComponentResource):
             ip_allocation_policy=args.ip_allocation_policy,
             private_cluster_config=args.private_cluster_config,
             workload_identity_config=args.workload_identity_config,
-            location="US-CENTRAL1",
+            location=args.location,
             initial_node_count=1,
             remove_default_node_pool=True,
             logging_service=None,

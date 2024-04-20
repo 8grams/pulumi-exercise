@@ -1,5 +1,6 @@
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import compute
+from components.variables import region
 
 class IpRangeArgs:
     def __init__(self, 
@@ -17,7 +18,7 @@ class SubnetworkArgs:
                  ip_cidr_range: IpRangeArgs,
                  pod_address_range: IpRangeArgs,
                  service_address_range: IpRangeArgs,
-                 region="US-CENTRAL1",
+                 region=region,
                  private_ip_google_access=True
                  ):
         self.name = name

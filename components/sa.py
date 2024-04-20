@@ -1,6 +1,8 @@
 from typing import Sequence
 from pulumi import ComponentResource, ResourceOptions
 from pulumi_gcp import serviceaccount
+import pulumi_gcp.projects as gcp_projects
+from components.variables import project_id
 
 class ServiceAccountArgs:
     def __init__(self,
@@ -37,7 +39,7 @@ class ServiceAccountKeyArgs:
         self.service_account_id = service_account_id
         self.public_key_type = public_key_type
 
-# https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/iambinding/
+# https://www.pulumi.com/registry/packages/gcp/api-docs/projects/iambinding/
 class IamBinding(ComponentResource):
     def __init__(self, 
                  name: str, 
@@ -46,16 +48,16 @@ class IamBinding(ComponentResource):
                  opts: ResourceOptions = None):
         super().__init__(label, name, {}, opts)
 
-        self.iam_member = serviceaccount.IAMBinding(
+        self.iam_binding = gcp_projects.IAMBinding(
             resource_name=name,
-            service_account_id=args.serviceaccount.id,
+            project=project_id,
             role=args.role,
             members=args.members
         )
 
         self.register_outputs({})
 
-# https://www.pulumi.com/registry/packages/gcp/api-docs/serviceaccount/iammember/
+# https://www.pulumi.com/registry/packages/gcp/api-docs/projects/iammember/
 class IamMember(ComponentResource):
     def __init__(self, 
                  name: str, 
@@ -64,10 +66,10 @@ class IamMember(ComponentResource):
                  opts: ResourceOptions = None):
         super().__init__(label, name, {}, opts)
 
-        self.iam_member = serviceaccount.IAMMember(
+        self.iam_member = gcp_projects.IAMMember(
             resource_name=name,
+            project=project_id,
             role=args.role,
-            service_account_id=args.serviceaccount.name,
             member=args.serviceaccount.email.apply(lambda email: "serviceAccount:" + email)
         )
 

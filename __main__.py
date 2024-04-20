@@ -150,7 +150,7 @@ kubernetes = KubernetesCluster(
         workload_identity_config=container.ClusterWorkloadIdentityConfigArgs(
             workload_pool=project_id + ".svc.id.goog"
         ),
-        location="US-CENTRAL1",
+        location=zone,
         initial_node_count=1,
         remove_default_node_pool=True,
         logging_service=None,
@@ -197,7 +197,7 @@ node_pool = NodePool(
             auto_upgrade=True
         ),
         node_count=1,
-        node_locations=["US-CENTRAL1-A"]
+        node_locations=[zone]
     )
 )
 
@@ -278,16 +278,16 @@ db_iam_member = IamMember(
     )
 )
 
-# binding service account to workload identity
-db_iam_binding = IamBinding(
-    "onxp-db-iam-binding",
-    "gcp:modules:sql:sa:iambinding:onxp",
-    IamBindingArgs(
-        serviceaccount=db_sa.service_account,
-        role="roles/iam.workloadIdentityUser",
-        members=["serviceAccount:" + project_id + ".svc.id.goog[exercise/onxp-exercise-sa]"]
-    )
-)
+# # binding service account to workload identity
+# db_iam_binding = IamBinding(
+#     "onxp-db-iam-binding",
+#     "gcp:modules:sql:sa:iambinding:onxp",
+#     IamBindingArgs(
+#         serviceaccount=db_sa.service_account,
+#         role="roles/iam.workloadIdentityUser",
+#         members=["serviceAccount:" + project_id + ".svc.id.goog[exercise/onxp-exercise-sa]"]
+#     )
+# )
 
 # Create GCS
 # Create bucket

@@ -37,7 +37,7 @@ class RouterNatArgs:
                  subnetworks: Sequence[compute.RouterNatSubnetworkArgs],
                  router: compute.Router,
                  nat_ips: Sequence[RouterNatIpAddress],
-                 region="US-CENTRAL1",
+                 region=region,
                  nat_ip_allocate_option="MANUAL_ONLY",
                  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"):
         self.name = name
@@ -59,7 +59,8 @@ class RouterNat(ComponentResource):
 
         self.nat = compute.RouterNat(
             resource_name=name,
-            router=args.router.id,
+            name=args.name,
+            router=args.router.name,
             region=args.region,
             nat_ip_allocate_option=args.nat_ip_allocate_option,
             source_subnetwork_ip_ranges_to_nat=args.source_subnetwork_ip_ranges_to_nat,

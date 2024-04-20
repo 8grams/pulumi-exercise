@@ -1,6 +1,7 @@
 from typing import Sequence
 from pulumi import ComponentResource, ResourceOptions
-from pulumi_gcp import container, serviceaccount
+from pulumi_gcp import container
+from components.variables import zone
 
 class NodePoolArgs:
     def __init__(self,
@@ -10,7 +11,7 @@ class NodePoolArgs:
                  autoscaling=container.NodePoolAutoscalingArgs,
                  management=container.NodePoolManagementArgs,
                  node_count=1,
-                 node_locations: Sequence[str]=["US-CENTRAL1-A"],
+                 node_locations: Sequence[str]=[zone],
                 ):
         self.name = name
         self.cluster = cluster
